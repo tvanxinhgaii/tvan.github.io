@@ -16,7 +16,7 @@
     }
 
     .container {
-      padding: 60px 20px;
+      padding: 60px 20px 20px;
       position: relative;
       z-index: 2;
     }
@@ -67,16 +67,20 @@
     }
 
     .music-button {
-      margin-top: 40px;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10;
+      text-align: right;
     }
 
     .music-button button {
       background-color: #f48fb1;
       border: none;
-      padding: 10px 20px;
+      padding: 10px 16px;
       color: white;
-      border-radius: 25px;
-      font-size: 1em;
+      border-radius: 20px;
+      font-size: 0.9em;
       cursor: pointer;
       transition: background-color 0.3s;
     }
@@ -85,35 +89,16 @@
       background-color: #ec407a;
     }
 
-    /* Tuyết rơi */
-    .snowflake {
-      position: fixed;
-      top: -10px;
-      z-index: 3;
-      color: white;
-      font-size: 1.5em;
-      pointer-events: none;
-      user-select: none;
-      animation: fall linear infinite;
+    .music-hint {
+      font-size: 0.75em;
+      color: #ddd;
+      margin-top: 4px;
     }
 
-    @keyframes fall {
-      0% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(100vh) rotate(360deg);
-        opacity: 0;
-      }
+    .soundcloud-player {
+      display: none; /* Ẩn player */
     }
 
-    /* Ẩn video */
-    .music-video iframe {
-      display: none;
-    }
-
-    /* Dev by Daizylz */
     .footer {
       position: fixed;
       bottom: 10px;
@@ -125,53 +110,41 @@
 </head>
 <body>
   <div class="container">
-    <h1>Xin chào, mình là Tvann!</h1>
-    <p>Trần Thị Vân - 09/01/2009</p>
-    
+    <h1>Xin chào, mình là Trần Thị Vân!</h1>
+    <p>Mình là một cô gái yêu thích cái đẹp, thích làm đồ handmade và đang học thiết kế. Mình luôn tìm kiếm niềm vui trong những điều nhỏ bé hằng ngày 💖</p>
+
     <div class="social-links">
       <a href="https://facebook.com/tran.vann.796805" target="_blank">Facebook</a>
       <a href="https://www.tiktok.com/@tvan.910" target="_blank">TikTok</a>
       <a href="https://zalo.me/0967411260/" target="_blank">Zalo</a>
     </div>
+  </div>
 
-    <div class="music-button">
-      <button onclick="toggleMusic()">🎵 Bật / Tắt Nhạc</button>
-    </div>
-    
-    <!-- Nhúng YouTube Video (ẩn video đi) -->
-    <div class="music-video">
-      <iframe id="bgMusicIframe" width="560" height="315" src="https://www.youtube.com/embed/JgTZvDbaTtg?autoplay=1&mute=0&loop=1&playlist=JgTZvDbaTtg" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-    </div>
+  <div class="music-button">
+    <button onclick="toggleMusic()">🎵 Bật / Tắt Nhạc</button>
+    <div class="music-hint">(Bấm để phát nhạc 💗)</div>
+  </div>
+
+  <!-- SoundCloud player ẩn -->
+  <div class="soundcloud-player">
+    <iframe id="scPlayer" width="100%" height="166" scrolling="no" frameborder="no"
+      allow="autoplay"
+      src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/nltlinh148/mot-doi-14-casper-bon-nghiem-feat-buitruonglinh&color=%23ffb6c1&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false">
+    </iframe>
   </div>
 
   <div class="footer">Dev by Daizylz</div>
 
   <script>
-    // Tạo hiệu ứng tuyết rơi
-    const createSnowflake = () => {
-      const snowflake = document.createElement('div');
-      snowflake.classList.add('snowflake');
-      snowflake.innerText = '❄';
-      snowflake.style.left = Math.random() * window.innerWidth + 'px';
-      snowflake.style.animationDuration = (Math.random() * 3 + 2) + 's';
-      snowflake.style.fontSize = (Math.random() * 10 + 10) + 'px';
-      document.body.appendChild(snowflake);
-      setTimeout(() => snowflake.remove(), 5000);
-    };
-    setInterval(createSnowflake, 200);
-
-    // Nhạc nền từ YouTube
-    const bgMusicIframe = document.getElementById('bgMusicIframe');
-    let isPlaying = false;
+    const scPlayer = document.getElementById('scPlayer');
+    let isMusicPlaying = true;
 
     function toggleMusic() {
-      const player = bgMusicIframe.contentWindow;
-      if (isPlaying) {
-        player.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-      } else {
-        player.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-      }
-      isPlaying = !isPlaying;
+      const message = isMusicPlaying ? 'pause' : 'play';
+      scPlayer.contentWindow.postMessage(JSON.stringify({
+        method: message
+      }), '*');
+      isMusicPlaying = !isMusicPlaying;
     }
   </script>
 </body>
