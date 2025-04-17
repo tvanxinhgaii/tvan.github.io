@@ -106,12 +106,20 @@
       font-size: 0.8em;
       color: #fceff9;
     }
+
+    #snow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Xin chào, mình là Tvann!</h1>
-    <p>Trần Thị Vân - 09/01/2009</p>
+    <h1>Xin chào, mình là Trần Thị Vân!</h1>
+    <p>Mình là một cô gái yêu thích cái đẹp, thích làm đồ handmade và đang học thiết kế. Mình luôn tìm kiếm niềm vui trong những điều nhỏ bé hằng ngày 💖</p>
 
     <div class="social-links">
       <a href="https://facebook.com/tran.vann.796805" target="_blank">Facebook</a>
@@ -134,6 +142,64 @@
   </div>
 
   <div class="footer">Dev by Daizylz</div>
+
+  <!-- Hiệu ứng tuyết rơi -->
+  <canvas id="snow"></canvas>
+  <script>
+    const canvas = document.getElementById('snow');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    const snowflakes = Array.from({ length: 100 }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: Math.random() * 4 + 1,
+      d: Math.random() * 100
+    }));
+
+    let angle = 0;
+
+    function drawSnowflakes() {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.beginPath();
+      for (let i = 0; i < snowflakes.length; i++) {
+        const f = snowflakes[i];
+        ctx.moveTo(f.x, f.y);
+        ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2, true);
+      }
+      ctx.fill();
+      update();
+    }
+
+    function update() {
+      angle += 0.01;
+      for (let i = 0; i < snowflakes.length; i++) {
+        const f = snowflakes[i];
+        f.y += Math.cos(angle + f.d) + 1 + f.r / 2;
+        f.x += Math.sin(angle) * 2;
+
+        if (f.y > height) {
+          snowflakes[i] = {
+            x: Math.random() * width,
+            y: 0,
+            r: f.r,
+            d: f.d
+          };
+        }
+      }
+    }
+
+    setInterval(drawSnowflakes, 33);
+  </script>
 
   <script>
     const scPlayer = document.getElementById('scPlayer');
